@@ -1,20 +1,30 @@
-version: '2'
+version: '3'
 
 services:
   db:
     image: postgres:9.5.1
-    env_file: envs/${DOCKER_COMPOSE_ENV}.env
+    container_name: ticketator_db
+    env_file: ./docker/${DOCKER_COMPOSE_ENV}.env
+    networks:
+      - ticketator
     volumes:
-       - /srv/docker/ticketator/postgresql/data/:/var/lib/postgresql/data
+      - ./docker/volumes/postgres:/var/lib/postgresql/data:rw
 
   backend:
     image: ticketator/backend
+    container_name: ticketator_backend
     build: .
-    env_file: envs/${DOCKER_COMPOSE_ENV}.env
+    env_file: ./docker/${DOCKER_COMPOSE_ENV}.env
+    networks:
+      - ticketator
     volumes:
       - .:/code
-      - /tmp/ticketator:/static
+      - ./docker/volumes/static:/static:rw
     ports:
       - '8000:8000'
     depends_on:
       - db
+
+networks:
+  ticketator:
+    driver: bridge

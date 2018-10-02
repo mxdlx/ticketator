@@ -74,3 +74,6 @@ docs/_build/
 
 # Vim swap
 *.swp
+
+# Docker volumes
+docker/volumes/
